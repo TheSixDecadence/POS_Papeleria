@@ -35,15 +35,16 @@ export async function GET(
 // PUT /api/products/[id] - Update a product
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json()
     const { name, description, price, stock, category, sku } = body
 
     // Check if product exists
     const existingProduct = await prisma.product.findUnique({
-      where: { id: params.id }
+      where: { id }
     })
 
     if (!existingProduct) {
@@ -69,7 +70,7 @@ export async function PUT(
 
     const updatedProduct = await prisma.product.update({
       where: {
-        id: params.id
+        id
       },
       data: {
         name,
@@ -94,12 +95,14 @@ export async function PUT(
 // DELETE /api/products/[id] - Delete a product
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    
     // Check if product exists
     const existingProduct = await prisma.product.findUnique({
-      where: { id: params.id }
+      where: { id }
     })
 
     if (!existingProduct) {
@@ -111,7 +114,7 @@ export async function DELETE(
 
     await prisma.product.delete({
       where: {
-        id: params.id
+        id
       }
     })
 

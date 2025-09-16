@@ -4,12 +4,14 @@ import { prisma } from '@/lib/prisma'
 // GET /api/repairs/[id] - Get a specific repair ticket
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+    
     const repairTicket = await prisma.repairTicket.findUnique({
       where: {
-        id: params.id
+        id
       },
       include: {
         customer: true
@@ -36,9 +38,10 @@ export async function GET(
 // PUT /api/repairs/[id] - Update a repair ticket
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json()
     const { 
       status,
@@ -51,7 +54,7 @@ export async function PUT(
 
     // Check if repair ticket exists
     const existingTicket = await prisma.repairTicket.findUnique({
-      where: { id: params.id }
+      where: { id }
     })
 
     if (!existingTicket) {
@@ -63,7 +66,7 @@ export async function PUT(
 
     const updatedTicket = await prisma.repairTicket.update({
       where: {
-        id: params.id
+        id
       },
       data: {
         status,

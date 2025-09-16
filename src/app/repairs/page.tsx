@@ -60,9 +60,17 @@ export default function RepairsPage() {
     try {
       const response = await fetch('/api/customers');
       const data = await response.json();
-      setCustomers(data);
+      
+      // Ensure data is an array before setting it
+      if (Array.isArray(data)) {
+        setCustomers(data);
+      } else {
+        console.error('API returned non-array data:', data);
+        setCustomers([]);
+      }
     } catch (error) {
       console.error('Error fetching customers:', error);
+      setCustomers([]); // Ensure customers remains an empty array on error
     }
   };
 
@@ -262,7 +270,7 @@ export default function RepairsPage() {
               onChange={(e) => setSelectedCustomer(e.target.value)}
             >
               <option value="">Seleccionar cliente existente...</option>
-              {customers.map((customer) => (
+              {(customers || []).map((customer) => (
                 <option key={customer.id} value={customer.id}>
                   {customer.name} - {customer.phone || 'Sin teléfono'}
                 </option>

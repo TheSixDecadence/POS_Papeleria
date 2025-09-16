@@ -39,9 +39,17 @@ export default function ProductsPage() {
     try {
       const response = await fetch('/api/products');
       const data = await response.json();
-      setProducts(data);
+      
+      // Ensure data is an array before setting it
+      if (Array.isArray(data)) {
+        setProducts(data);
+      } else {
+        console.error('API returned non-array data:', data);
+        setProducts([]);
+      }
     } catch (error) {
       console.error('Error fetching products:', error);
+      setProducts([]); // Ensure products remains an empty array on error
     } finally {
       setLoading(false);
     }
@@ -120,7 +128,7 @@ export default function ProductsPage() {
     setShowAddForm(true);
   };
 
-  const filteredProducts = products.filter(product =>
+  const filteredProducts = (products || []).filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
     product.sku.toLowerCase().includes(searchTerm.toLowerCase())

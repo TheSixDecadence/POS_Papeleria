@@ -54,9 +54,17 @@ export default function RepairManagementPage() {
     try {
       const response = await fetch('/api/repairs');
       const data = await response.json();
-      setTickets(data);
+      
+      // Ensure data is an array before setting it
+      if (Array.isArray(data)) {
+        setTickets(data);
+      } else {
+        console.error('API returned non-array data:', data);
+        setTickets([]);
+      }
     } catch (error) {
       console.error('Error fetching repair tickets:', error);
+      setTickets([]); // Ensure tickets remains an empty array on error
     } finally {
       setLoading(false);
     }
@@ -109,7 +117,7 @@ export default function RepairManagementPage() {
     setShowModal(true);
   };
 
-  const filteredTickets = tickets.filter(ticket => {
+  const filteredTickets = (tickets || []).filter(ticket => {
     const matchesSearch = 
       ticket.ticketNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
       ticket.customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

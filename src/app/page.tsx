@@ -6,10 +6,10 @@ export default function HomePage() {
     <div className="space-y-6">
       <div className="text-center">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          Bienvenido a Papelería & Reparaciones
+          Bienvenido a Papelería JADI
         </h1>
         <p className="text-xl text-gray-600">
-          Sistema integral de punto de venta y gestión de reparaciones
+          Este es el sistema de punto de venta y gestión de reparaciones de las compus.
         </p>
       </div>
 

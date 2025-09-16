@@ -37,9 +37,17 @@ export default function SalesPage() {
     try {
       const response = await fetch('/api/sales');
       const data = await response.json();
-      setSales(data);
+      
+      // Ensure data is an array before setting it
+      if (Array.isArray(data)) {
+        setSales(data);
+      } else {
+        console.error('API returned non-array data:', data);
+        setSales([]);
+      }
     } catch (error) {
       console.error('Error fetching sales:', error);
+      setSales([]); // Ensure sales remains an empty array on error
     } finally {
       setLoading(false);
     }
@@ -56,14 +64,14 @@ export default function SalesPage() {
   };
 
   // Calculate statistics
-  const totalSales = sales.length;
-  const totalRevenue = sales.reduce((sum, sale) => sum + sale.total, 0);
-  const totalItems = sales.reduce((sum, sale) => 
+  const totalSales = (sales || []).length;
+  const totalRevenue = (sales || []).reduce((sum, sale) => sum + sale.total, 0);
+  const totalItems = (sales || []).reduce((sum, sale) => 
     sum + sale.items.reduce((itemSum, item) => itemSum + item.quantity, 0), 0
   );
 
   // Group sales by date
-  const salesByDate = sales.reduce((groups, sale) => {
+  const salesByDate = (sales || []).reduce((groups, sale) => {
     const date = format(new Date(sale.createdAt), 'yyyy-MM-dd');
     if (!groups[date]) {
       groups[date] = [];

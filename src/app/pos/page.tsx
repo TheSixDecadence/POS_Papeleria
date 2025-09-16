@@ -147,7 +147,7 @@ export default function POSPage() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <select
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="text-gray-700 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
           >
@@ -183,7 +183,7 @@ export default function POSPage() {
         </div>
         
         {filteredProducts.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-8 text-gray-700">
             No hay productos disponibles
           </div>
         )}
@@ -212,18 +212,18 @@ export default function POSPage() {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                  className="p-1 rounded-full bg-gray-200 hover:bg-gray-300"
+                  className="text-gray-700 p-1 rounded-full bg-gray-200 hover:bg-gray-300"
                 >
                   <Minus size={12} />
                 </button>
                 
-                <span className="w-8 text-center text-sm font-medium">
+                <span className="text-gray-700 w-8 text-center text-sm font-medium">
                   {item.quantity}
                 </span>
                 
                 <button
                   onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                  className="p-1 rounded-full bg-gray-200 hover:bg-gray-300"
+                  className="text-gray-700 p-1 rounded-full bg-gray-200 hover:bg-gray-300"
                   disabled={item.quantity >= item.product.stock}
                 >
                   <Plus size={12} />

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
-import { Package, ShoppingCart, History, Home } from "lucide-react";
+import { Package, ShoppingCart, History, Home, Wrench } from "lucide-react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Papelería POS",
-  description: "Sistema de punto de venta para papelería",
+  title: "Papelería & Reparaciones POS",
+  description: "Sistema de punto de venta y gestión de reparaciones",
 };
 
 export default function RootLayout({
@@ -36,7 +36,7 @@ export default function RootLayout({
               <div className="flex justify-between items-center h-16">
                 <div className="flex items-center space-x-8">
                   <Link href="/" className="text-xl font-bold">
-                    Papelería POS
+                    Papelería & Reparaciones
                   </Link>
                   <div className="hidden md:flex space-x-4">
                     <Link 
@@ -65,8 +65,32 @@ export default function RootLayout({
                       className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-blue-700 transition-colors"
                     >
                       <History size={20} />
-                      <span>Historial</span>
+                      <span>Ventas</span>
                     </Link>
+                    
+                    {/* Repair Section Dropdown */}
+                    <div className="relative group">
+                      <button className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                        <Wrench size={20} />
+                        <span>Reparaciones</span>
+                      </button>
+                      <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                        <div className="py-1">
+                          <Link 
+                            href="/repairs" 
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          >
+                            Registrar Equipo
+                          </Link>
+                          <Link 
+                            href="/repairs/manage" 
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          >
+                            Gestionar Tickets
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -46,3 +46,39 @@ model SaleItem {
   productId String
   product   Product @relation(fields: [productId], references: [id])
 }
+
+model Customer {
+  id           String   @id @default(cuid())
+  name         String
+  phone        String?
+  email        String?
+  address      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  // Relations
+  repairTickets RepairTicket[]
+}
+
+model RepairTicket {
+  id              String   @id @default(cuid())
+  ticketNumber    String   @unique
+  deviceType      String   // Laptop, Desktop, etc.
+  brand           String?
+  model           String?
+  serialNumber    String?
+  problemDescription String
+  observations    String?
+  status          String   @default("Received") // Received, In Progress, Completed, Delivered
+  estimatedCost   Float?
+  finalCost       Float?
+  receivedDate    DateTime @default(now())
+  completedDate   DateTime?
+  deliveredDate   DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  customerId      String
+  customer        Customer @relation(fields: [customerId], references: [id])
+}

@@ -4,12 +4,14 @@ import { prisma } from '@/lib/prisma'
 // GET /api/products/[id] - Get a specific product
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
+
     const product = await prisma.product.findUnique({
       where: {
-        id: params.id
+        id: id
       }
     })
 

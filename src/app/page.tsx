@@ -1,7 +1,83 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from "next/link";
 import { ShoppingCart, Package, History, TrendingUp, Wrench, Settings } from "lucide-react";
+import LoadingSpinner from '@/components/LoadingSpinner';
+
+interface Stats {
+  productsInStock: number;
+  salesToday: number;
+  dailyRevenue: number;
+  equipmentReceived: number;
+  equipmentInProgress: number;
+  equipmentCompleted: number;
+}
 
 export default function HomePage() {
+  const [stats, setStats] = useState<Stats>({
+    productsInStock: 0,
+    salesToday: 0,
+    dailyRevenue: 0,
+    equipmentReceived: 0,
+    equipmentInProgress: 0,
+    equipmentCompleted: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      const [productsRes, salesRes, repairsRes] = await Promise.all([
+        fetch('/api/products'),
+        fetch('/api/sales'),
+        fetch('/api/repairs')
+      ]);
+
+      const products = await productsRes.json();
+      const sales = await salesRes.json();
+      const repairs = await repairsRes.json();
+
+      // Calculate products in stock
+      const productsInStock = Array.isArray(products) ? products.filter(p => p.stock > 0).length : 0;
+
+      // Calculate today's sales
+      const today = new Date().toISOString().split('T')[0];
+      const salesToday = Array.isArray(sales) ? sales.filter(sale => 
+        sale.createdAt.startsWith(today)
+      ).length : 0;
+
+      // Calculate daily revenue
+      const dailyRevenue = Array.isArray(sales) ? sales
+        .filter(sale => sale.createdAt.startsWith(today))
+        .reduce((sum, sale) => sum + sale.total, 0) : 0;
+
+      // Calculate repair stats
+      const equipmentReceived = Array.isArray(repairs) ? repairs.length : 0;
+      const equipmentInProgress = Array.isArray(repairs) ? repairs.filter(r => r.status === 'In Progress').length : 0;
+      const equipmentCompleted = Array.isArray(repairs) ? repairs.filter(r => r.status === 'Completed').length : 0;
+
+      setStats({
+        productsInStock,
+        salesToday,
+        dailyRevenue,
+        equipmentReceived,
+        equipmentInProgress,
+        equipmentCompleted,
+      });
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <LoadingSpinner message="Cargando estadísticas del sistema..." size="lg" />;
+  }
   return (
     <div className="space-y-6">
       <div className="text-center">
@@ -85,15 +161,15 @@ export default function HomePage() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600">8</div>
+              <div className="text-3xl font-bold text-blue-600">{stats.productsInStock}</div>
               <div className="text-gray-600">Productos en Stock</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-green-600">0</div>
+              <div className="text-3xl font-bold text-green-600">{stats.salesToday}</div>
               <div className="text-gray-600">Ventas Hoy</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600">$0</div>
+              <div className="text-3xl font-bold text-purple-600">${stats.dailyRevenue.toFixed(2)}</div>
               <div className="text-gray-600">Ingresos del Día</div>
             </div>
           </div>
@@ -106,15 +182,15 @@ export default function HomePage() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600">0</div>
+              <div className="text-3xl font-bold text-blue-600">{stats.equipmentReceived}</div>
               <div className="text-gray-600">Equipos Recibidos</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-yellow-600">0</div>
+              <div className="text-3xl font-bold text-yellow-600">{stats.equipmentInProgress}</div>
               <div className="text-gray-600">En Proceso</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-green-600">0</div>
+              <div className="text-3xl font-bold text-green-600">{stats.equipmentCompleted}</div>
               <div className="text-gray-600">Completados</div>
             </div>
           </div>

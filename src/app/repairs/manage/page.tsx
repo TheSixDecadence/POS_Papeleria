@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Search, Eye, Edit, Clock, CheckCircle, XCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 interface Customer {
   id: string;
@@ -150,7 +151,7 @@ export default function RepairManagementPage() {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Cargando tickets de reparación...</div>;
+    return <LoadingSpinner message="Cargando tickets de reparación..." size="lg" />;
   }
 
   return (

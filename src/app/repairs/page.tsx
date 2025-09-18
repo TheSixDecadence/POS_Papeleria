@@ -8,7 +8,6 @@ interface Customer {
   name: string;
   phone: string | null;
   email: string | null;
-  address: string | null;
 }
 
 interface RepairTicket {
@@ -22,6 +21,7 @@ interface RepairTicket {
   observations: string | null;
   status: string;
   estimatedCost: number | null;
+  pickedUpBy: string | null;
   receivedDate: string;
   customer: Customer;
 }
@@ -35,8 +35,7 @@ export default function RepairsPage() {
   const [customerFormData, setCustomerFormData] = useState({
     name: '',
     phone: '',
-    email: '',
-    address: ''
+    email: ''
   });
 
   const [repairFormData, setRepairFormData] = useState({
@@ -46,7 +45,8 @@ export default function RepairsPage() {
     serialNumber: '',
     problemDescription: '',
     observations: '',
-    estimatedCost: ''
+    estimatedCost: '',
+    pickedUpBy: ''
   });
 
   const [createdTicket, setCreatedTicket] = useState<RepairTicket | null>(null);
@@ -91,7 +91,7 @@ export default function RepairsPage() {
         const newCustomer = await response.json();
         await fetchCustomers();
         setSelectedCustomer(newCustomer.id);
-        setCustomerFormData({ name: '', phone: '', email: '', address: '' });
+        setCustomerFormData({ name: '', phone: '', email: '' });
         setShowCustomerForm(false);
       } else {
         const error = await response.json();
@@ -138,7 +138,8 @@ export default function RepairsPage() {
           serialNumber: '',
           problemDescription: '',
           observations: '',
-          estimatedCost: ''
+          estimatedCost: '',
+          pickedUpBy: ''
         });
         setSelectedCustomer('');
       } else {
@@ -186,7 +187,6 @@ export default function RepairsPage() {
             <div class="field"><span class="label">Nombre:</span> ${createdTicket.customer.name}</div>
             <div class="field"><span class="label">Teléfono:</span> ${createdTicket.customer.phone || 'No proporcionado'}</div>
             <div class="field"><span class="label">Email:</span> ${createdTicket.customer.email || 'No proporcionado'}</div>
-            <div class="field"><span class="label">Dirección:</span> ${createdTicket.customer.address || 'No proporcionada'}</div>
           </div>
 
           <div class="section">
@@ -254,7 +254,7 @@ export default function RepairsPage() {
 
       {/* Customer Selection/Creation */}
       <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-        <h2 className="text-xl font-semibold mb-4 flex items-center">
+        <h2 className="text-gray-700 text-xl font-semibold mb-4 flex items-center">
           <User className="mr-2" size={24} />
           Información del Cliente
         </h2>
@@ -265,7 +265,7 @@ export default function RepairsPage() {
               Seleccionar Cliente
             </label>
             <select
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="text-gray-700 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               value={selectedCustomer}
               onChange={(e) => setSelectedCustomer(e.target.value)}
             >
@@ -293,7 +293,7 @@ export default function RepairsPage() {
         {/* New Customer Form */}
         {showCustomerForm && (
           <form onSubmit={handleCreateCustomer} className="border-t pt-4">
-            <h3 className="text-lg font-medium mb-3">Crear Nuevo Cliente</h3>
+            <h3 className="text-gray-700 text-lg font-medium mb-3">Crear Nuevo Cliente</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -302,7 +302,7 @@ export default function RepairsPage() {
                 <input
                   type="text"
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="text-gray-700 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   value={customerFormData.name}
                   onChange={(e) => setCustomerFormData({ ...customerFormData, name: e.target.value })}
                 />
@@ -313,7 +313,7 @@ export default function RepairsPage() {
                 </label>
                 <input
                   type="tel"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="text-gray-700 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   value={customerFormData.phone}
                   onChange={(e) => setCustomerFormData({ ...customerFormData, phone: e.target.value })}
                 />
@@ -324,20 +324,9 @@ export default function RepairsPage() {
                 </label>
                 <input
                   type="email"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="text-gray-700 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   value={customerFormData.email}
                   onChange={(e) => setCustomerFormData({ ...customerFormData, email: e.target.value })}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Dirección
-                </label>
-                <input
-                  type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  value={customerFormData.address}
-                  onChange={(e) => setCustomerFormData({ ...customerFormData, address: e.target.value })}
                 />
               </div>
             </div>
@@ -364,7 +353,7 @@ export default function RepairsPage() {
       {/* Repair Form */}
       {selectedCustomer && (
         <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-          <h2 className="text-xl font-semibold mb-4 flex items-center">
+          <h2 className="text-gray-700 text-xl font-semibold mb-4 flex items-center">
             <Laptop className="mr-2" size={24} />
             Información del Equipo
           </h2>
@@ -377,7 +366,7 @@ export default function RepairsPage() {
                 </label>
                 <select
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="text-gray-700 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   value={repairFormData.deviceType}
                   onChange={(e) => setRepairFormData({ ...repairFormData, deviceType: e.target.value })}
                 >
@@ -397,7 +386,7 @@ export default function RepairsPage() {
                 </label>
                 <input
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="text-gray-700 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   value={repairFormData.brand}
                   onChange={(e) => setRepairFormData({ ...repairFormData, brand: e.target.value })}
                 />
@@ -409,7 +398,7 @@ export default function RepairsPage() {
                 </label>
                 <input
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="text-gray-700 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   value={repairFormData.model}
                   onChange={(e) => setRepairFormData({ ...repairFormData, model: e.target.value })}
                 />
@@ -421,7 +410,7 @@ export default function RepairsPage() {
                 </label>
                 <input
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="text-gray-700 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   value={repairFormData.serialNumber}
                   onChange={(e) => setRepairFormData({ ...repairFormData, serialNumber: e.target.value })}
                 />
@@ -434,9 +423,22 @@ export default function RepairsPage() {
                 <input
                   type="number"
                   step="0.01"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="text-gray-700 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   value={repairFormData.estimatedCost}
                   onChange={(e) => setRepairFormData({ ...repairFormData, estimatedCost: e.target.value })}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Recogido por
+                </label>
+                <input
+                  type="text"
+                  placeholder="Nombre de quien recoge el equipo"
+                  className="text-gray-700 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  value={repairFormData.pickedUpBy}
+                  onChange={(e) => setRepairFormData({ ...repairFormData, pickedUpBy: e.target.value })}
                 />
               </div>
             </div>
@@ -448,7 +450,7 @@ export default function RepairsPage() {
               <textarea
                 required
                 rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="text-gray-700 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={repairFormData.problemDescription}
                 onChange={(e) => setRepairFormData({ ...repairFormData, problemDescription: e.target.value })}
                 placeholder="Describe detalladamente el problema reportado por el cliente..."
@@ -461,7 +463,7 @@ export default function RepairsPage() {
               </label>
               <textarea
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="text-gray-700 w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={repairFormData.observations}
                 onChange={(e) => setRepairFormData({ ...repairFormData, observations: e.target.value })}
                 placeholder="Cualquier observación adicional sobre el estado del equipo..."

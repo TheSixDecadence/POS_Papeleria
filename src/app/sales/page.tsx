@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Calendar, DollarSign, Package2, Eye } from 'lucide-react';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 interface SaleItem {
   id: string;
@@ -81,7 +82,7 @@ export default function SalesPage() {
   }, {} as Record<string, Sale[]>);
 
   if (loading) {
-    return <div className="text-center py-8">Cargando historial de ventas...</div>;
+    return <LoadingSpinner message="Cargando historial de ventas..." size="lg" />;
   }
 
   return (

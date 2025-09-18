@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Plus, Minus, ShoppingCart, X } from 'lucide-react';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 interface Product {
   id: string;
@@ -137,7 +138,7 @@ export default function POSPage() {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Cargando productos...</div>;
+    return <LoadingSpinner message="Cargando productos para la venta..." size="lg" />;
   }
 
   return (

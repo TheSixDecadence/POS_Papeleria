@@ -48,6 +48,7 @@ export async function PUT(
       estimatedCost,
       finalCost,
       observations,
+      pickedUpBy,
       completedDate,
       deliveredDate
     } = body
@@ -73,6 +74,7 @@ export async function PUT(
         estimatedCost: estimatedCost ? parseFloat(estimatedCost) : undefined,
         finalCost: finalCost ? parseFloat(finalCost) : undefined,
         observations,
+        pickedUpBy,
         completedDate: completedDate ? new Date(completedDate) : undefined,
         deliveredDate: deliveredDate ? new Date(deliveredDate) : undefined
       },

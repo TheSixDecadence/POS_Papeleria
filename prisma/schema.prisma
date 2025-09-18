@@ -52,7 +52,6 @@ model Customer {
   name         String
   phone        String?
   email        String?
-  address      String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   
@@ -72,6 +71,7 @@ model RepairTicket {
   status          String   @default("Received") // Received, In Progress, Completed, Delivered
   estimatedCost   Float?
   finalCost       Float?
+  pickedUpBy      String?  // Person who picked up the device
   receivedDate    DateTime @default(now())
   completedDate   DateTime?
   deliveredDate   DateTime?
